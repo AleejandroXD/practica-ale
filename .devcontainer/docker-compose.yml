@@ -1,0 +1,36 @@
+version: "3"
+name: practica-ale
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        NODE_VERSION: "15"
+    container_name  : practica-ale-laravel
+    working_dir: /var/www/html/
+    ports:
+      - "8000:80"
+      - "3000:3000"
+      - "3001:3001"
+    volumes:
+      - ../:/var/www/html/
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=root
+    volumes:
+      - /var/lib/mysql
+    ports:
+      - "3308:3306"
+    command: ['mysqld', '--mysql-native-password=ON']
+  phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        environment:
+            PMA_HOST: mysql
+        ports:
+        - 8090:80
